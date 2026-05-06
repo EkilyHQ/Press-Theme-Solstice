@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "type": "press-theme",
+  "value": "solstice",
+  "label": "Solstice",
+  "version": "3.4.0",
+  "contractVersion": 1,
+  "release": {
+    "tag": "v3.4.0",
+    "htmlUrl": "https://github.com/EkilyHQ/Press-Theme-Solstice/releases/tag/v3.4.0",
+    "publishedAt": "2026-05-06T18:12:00Z",
+    "notes": ""
+  },
+  "asset": {
+    "name": "press-theme-solstice-v3.4.0.zip",
+    "url": "https://github.com/EkilyHQ/Press-Theme-Solstice/releases/download/v3.4.0/press-theme-solstice-v3.4.0.zip",
+    "size": 23424,
+    "digest": "sha256:3759ad8f08a594914f5823c93ed671a84d1e46721fa8baff3946747ddd47363e"
+  },
+  "files": [
+    "modules/interactions.js",
+    "modules/layout.js",
+    "theme.css",
+    "theme.json"
+  ]
+}
