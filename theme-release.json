@@ -3,19 +3,19 @@
   "type": "press-theme",
   "value": "solstice",
   "label": "Solstice",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "contractVersion": 1,
   "release": {
-    "tag": "v3.4.0",
-    "htmlUrl": "https://github.com/EkilyHQ/Press-Theme-Solstice/releases/tag/v3.4.0",
-    "publishedAt": "2026-05-06T19:25:59Z",
+    "tag": "v3.4.1",
+    "htmlUrl": "https://github.com/EkilyHQ/Press-Theme-Solstice/releases/tag/v3.4.1",
+    "publishedAt": "2026-05-06T20:01:06Z",
     "notes": ""
   },
   "asset": {
-    "name": "press-theme-solstice-v3.4.0.zip",
-    "url": "https://github.com/EkilyHQ/Press-Theme-Solstice/releases/download/v3.4.0/press-theme-solstice-v3.4.0.zip",
+    "name": "press-theme-solstice-v3.4.1.zip",
+    "url": "https://raw.githubusercontent.com/EkilyHQ/Press-Theme-Solstice/release-artifacts/v3.4.1/press-theme-solstice-v3.4.1.zip",
     "size": 23424,
-    "digest": "sha256:4304fe4e590201f67acf896a92d2e89c7480f9576bce162753baa1c6d59a57ef"
+    "digest": "sha256:df714e6ae0ed506db5c5a53ff770856b45c7a1c2fdf5d33a3b424abde8b16416"
   },
   "files": [
     "modules/interactions.js",
