@@ -1,0 +1,10 @@
+# yaml-language-server: $schema=../assets/schema/index.json
+
+first-light-interface:
+  en: post/first-light-interface/en.md
+filament-alert:
+  en: post/filament-alert/en.md
+quiet-disk-mode:
+  en: post/quiet-disk-mode/en.md
+coronal-loop-dashboard:
+  en: post/coronal-loop-dashboard/en.md

@@ -1,0 +1,14 @@
+siteTitle: "Kai Lin Solar Lab"
+siteDescription:
+  en: "A fictional product-and-science notebook for showing the crisp, media-forward Solstice theme."
+contentRoot: wwwroot
+defaultLanguage: en
+themeMode: auto
+themePack: "solstice"
+annotate:
+  enabled: false
+repo:
+  provider: github
+  owner: EkilyHQ
+  name: "Press-Theme-Solstice"
+  branch: demo
