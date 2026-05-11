@@ -1,0 +1,84 @@
+{
+  "slug": "solstice",
+  "label": "Solstice",
+  "repo": "EkilyHQ/Press-Theme-Solstice",
+  "siteTitle": "Kai Lin Solar Lab",
+  "siteDescription": "A fictional product-and-science notebook for showing the crisp, media-forward Solstice theme.",
+  "author": "Kai Lin",
+  "aboutTitle": "About Kai Lin Solar Lab",
+  "about": "Kai Lin Solar Lab is a fictional notebook about product interfaces, light, instruments, and solar imagery. The entries are invented for the demo and use public-domain NASA/SDO imagery as visual prompts, with sources cited in each article.",
+  "posts": [
+    {
+      "id": "first-light-interface",
+      "title": "First Light Interface",
+      "date": "2026-05-07",
+      "tags": ["solar", "interface", "media"],
+      "excerpt": "A clean product note using a public-domain SDO image to test Solstice's media treatment.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg",
+      "source": {
+        "label": "The Sun by NASA's Solar Dynamics Observatory on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg",
+        "license": "Public domain; created solely by NASA"
+      },
+      "body": [
+        "A good interface should make first light feel immediate. Not dramatic, not mystical, just available.",
+        "Solstice is the right theme for this demo because it handles large media, code blocks, quotes, and metadata with a polished product surface. The image gets room, and the controls do not become the subject.",
+        "I would ship the first version with three states: quiet, tracking, and alert. Everything else can wait until the instrument earns more data."
+      ]
+    },
+    {
+      "id": "filament-alert",
+      "title": "Filament Alert Prototype",
+      "date": "2026-04-24",
+      "tags": ["prototype", "alert", "solar-weather"],
+      "excerpt": "A fictional product note on translating a solar filament image into a restrained alert panel.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/SDO_SDO_20120831_171.304.blend.jpg",
+      "source": {
+        "label": "SDO solar filament eruption image on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:SDO_SDO_20120831_171.304.blend.jpg",
+        "license": "Public domain; created solely by NASA"
+      },
+      "body": [
+        "The prototype uses a single rule: the alert should explain the next action before it explains the phenomenon.",
+        "In the demo, I used Solstice's code and callout styling to check whether technical notes still read like product writing. The answer depends on restraint: one threshold, one chart, one decision.",
+        "A warning that cannot be acted on is just weather in a louder voice."
+      ]
+    },
+    {
+      "id": "quiet-disk-mode",
+      "title": "Quiet Disk Mode",
+      "date": "2026-03-18",
+      "tags": ["display", "focus", "observatory"],
+      "excerpt": "A display-mode sketch that uses a full solar disk as a focus object.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Sun_disk.jpg",
+      "source": {
+        "label": "Sun disk, NASA/SDO on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:Sun_disk.jpg",
+        "license": "Public domain; created solely by NASA"
+      },
+      "body": [
+        "Quiet disk mode is for rooms where nobody is actively debugging. It keeps the star visible and moves every number to the edge.",
+        "This article tests Solstice's ability to keep a circular image crisp against a minimal surface. The theme's radius, shadow, and media variables make the image feel placed rather than pasted.",
+        "The best status screen is the one people can understand while walking past it."
+      ]
+    },
+    {
+      "id": "coronal-loop-dashboard",
+      "title": "Coronal Loop Dashboard",
+      "date": "2026-02-11",
+      "tags": ["dashboard", "loops", "science"],
+      "excerpt": "A dashboard sketch for coronal loop imagery and narrow operational copy.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/SDO_20260105_000634_4096_0171_%28AIA%29.jpg",
+      "source": {
+        "label": "SDO 2026 AIA 0171 coronal loops image on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:SDO_20260105_000634_4096_0171_(AIA).jpg",
+        "license": "Public domain; created solely by NASA"
+      },
+      "body": [
+        "The dashboard begins with a loop because loops are the easiest shape to over-explain. The interface has to resist that temptation.",
+        "I used this post to test tables, short paragraphs, and a source note after a high-contrast image. Solstice keeps the hierarchy clean enough for the article to stay readable.",
+        "A dashboard is not a wall of facts. It is a contract about which facts deserve the wall."
+      ]
+    }
+  ]
+}
