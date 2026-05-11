@@ -3,17 +3,21 @@
   "label": "Solstice",
   "repo": "EkilyHQ/Press-Theme-Solstice",
   "siteTitle": "Kai Lin Solar Lab",
-  "siteDescription": "A fictional product-and-science notebook for showing the crisp, media-forward Solstice theme.",
+  "siteDescription": "A product-and-science notebook for solar interfaces, observatory screens, and operational design.",
   "author": "Kai Lin",
   "aboutTitle": "About Kai Lin Solar Lab",
-  "about": "Kai Lin Solar Lab is a fictional notebook about product interfaces, light, instruments, and solar imagery. The entries are invented for the demo and use public-domain NASA/SDO imagery as visual prompts, with sources cited in each article.",
+  "about": "Kai Lin Solar Lab is a fictional product lab that designs interfaces for small observatories, classroom instruments, and public solar displays. The demo is written like a maintained product journal: release notes, experiment logs, display-mode decisions, alert copy reviews, and image-led technical essays. The lab, products, users, and metrics are invented for theme testing. NASA and public-domain solar imagery is cited in the articles so the demo can exercise media-heavy posts, source notes, and technical prose.",
   "posts": [
     {
       "id": "first-light-interface",
       "title": "First Light Interface",
       "date": "2026-05-07",
-      "tags": ["solar", "interface", "media"],
-      "excerpt": "A clean product note using a public-domain SDO image to test Solstice's media treatment.",
+      "tags": [
+        "solar",
+        "interface",
+        "media"
+      ],
+      "excerpt": "A product note using a public-domain SDO image to test Solstice's media treatment.",
       "image": "https://commons.wikimedia.org/wiki/Special:FilePath/The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg",
       "source": {
         "label": "The Sun by NASA's Solar Dynamics Observatory on Wikimedia Commons",
@@ -21,17 +25,22 @@
         "license": "Public domain; created solely by NASA"
       },
       "body": [
-        "A good interface should make first light feel immediate. Not dramatic, not mystical, just available.",
+        "A good interface should make first light feel immediate. Not dramatic, not mystical, just available. The first screen in the classroom prototype now opens with the disk, the timestamp, and one status sentence: observing conditions are stable.",
         "Solstice is the right theme for this demo because it handles large media, code blocks, quotes, and metadata with a polished product surface. The image gets room, and the controls do not become the subject.",
-        "I would ship the first version with three states: quiet, tracking, and alert. Everything else can wait until the instrument earns more data."
+        "The first release will ship with three modes: quiet, tracking, and alert. Quiet is for a wall display. Tracking is for instructors adjusting the telescope. Alert is for the rare moment when the system needs a human to stop trusting the image.",
+        "Open design question: should the timestamp read like an instrument value or a publication date? The current build uses both, but the next pass should make one of them primary."
       ]
     },
     {
       "id": "filament-alert",
       "title": "Filament Alert Prototype",
       "date": "2026-04-24",
-      "tags": ["prototype", "alert", "solar-weather"],
-      "excerpt": "A fictional product note on translating a solar filament image into a restrained alert panel.",
+      "tags": [
+        "prototype",
+        "alert",
+        "solar-weather"
+      ],
+      "excerpt": "A product note on translating a solar filament image into a restrained alert panel.",
       "image": "https://commons.wikimedia.org/wiki/Special:FilePath/SDO_SDO_20120831_171.304.blend.jpg",
       "source": {
         "label": "SDO solar filament eruption image on Wikimedia Commons",
@@ -39,16 +48,44 @@
         "license": "Public domain; created solely by NASA"
       },
       "body": [
-        "The prototype uses a single rule: the alert should explain the next action before it explains the phenomenon.",
-        "In the demo, I used Solstice's code and callout styling to check whether technical notes still read like product writing. The answer depends on restraint: one threshold, one chart, one decision.",
+        "The prototype uses a single rule: the alert should explain the next action before it explains the phenomenon. Most science displays do the reverse and then wonder why operators ignore them.",
+        "In the review build, the alert card has one threshold, one confidence line, and one instruction: keep the public display in delayed mode until the image stream stabilizes. The deeper science note remains one click away.",
+        "We tested three verbs: watch, hold, and switch. Watch felt passive. Hold implied danger. Switch gave the operator a real task without overselling the event.",
         "A warning that cannot be acted on is just weather in a louder voice."
+      ]
+    },
+    {
+      "id": "release-0-8-telemetry",
+      "title": "Release 0.8 Telemetry Notes",
+      "date": "2026-04-02",
+      "tags": [
+        "release-notes",
+        "telemetry",
+        "product"
+      ],
+      "excerpt": "A release-note style post that makes the demo feel like an active product notebook.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Solar_Panels_on_Rooftop.jpg",
+      "source": {
+        "label": "Solar panels on rooftop on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:Solar_Panels_on_Rooftop.jpg",
+        "license": "Public domain or freely licensed media as identified by Wikimedia Commons"
+      },
+      "body": [
+        "Version 0.8 is the first build we would leave running in a lobby without a staff member nearby. The telemetry panel now reports image age, stream health, brightness normalization, and display temperature in a single row.",
+        "The biggest change is not visual. We stopped logging every refresh as an event and started logging state transitions. That reduced noise enough for the weekly digest to show real failures instead of proving that the display was still awake.",
+        "Known issue: the wall display still reports a stale image for up to eight seconds after network recovery. The behavior is harmless but visually confusing because the status badge turns green before the image updates.",
+        "Next release target: align the recovery badge with the first fresh frame, then move the diagnostic log behind the maintainer toggle."
       ]
     },
     {
       "id": "quiet-disk-mode",
       "title": "Quiet Disk Mode",
       "date": "2026-03-18",
-      "tags": ["display", "focus", "observatory"],
+      "tags": [
+        "display",
+        "focus",
+        "observatory"
+      ],
       "excerpt": "A display-mode sketch that uses a full solar disk as a focus object.",
       "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Sun_disk.jpg",
       "source": {
@@ -58,15 +95,43 @@
       },
       "body": [
         "Quiet disk mode is for rooms where nobody is actively debugging. It keeps the star visible and moves every number to the edge.",
+        "The mode came from a school installation where the old dashboard looked impressive and taught almost nothing. Students walked past a wall of numbers. Teachers wanted a screen that could start a question without demanding a lecture.",
         "This article tests Solstice's ability to keep a circular image crisp against a minimal surface. The theme's radius, shadow, and media variables make the image feel placed rather than pasted.",
         "The best status screen is the one people can understand while walking past it."
+      ]
+    },
+    {
+      "id": "maintenance-window",
+      "title": "Maintenance Window After Cloud Cover",
+      "date": "2026-02-25",
+      "tags": [
+        "operations",
+        "maintenance",
+        "observatory"
+      ],
+      "excerpt": "An operations note about using cloudy hours for calibration, updates, and hardware checks.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Clouds_over_the_Sun.jpg",
+      "source": {
+        "label": "Clouds over the Sun on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:Clouds_over_the_Sun.jpg",
+        "license": "Public domain or freely licensed media as identified by Wikimedia Commons"
+      },
+      "body": [
+        "Cloud cover is a product feature if the interface knows what to do with it. We now use sustained low-contrast intervals to prompt calibration checks, cache cleanup, and panel temperature review.",
+        "The public screen says observing paused. The maintainer view says why: contrast below threshold for twelve minutes, image age stable, no stream error, roof sensor dry. That distinction matters. A visitor needs trust; a maintainer needs evidence.",
+        "The maintenance checklist is intentionally short: verify the last fresh frame, inspect the enclosure fan, run the focus motor through three positions, and confirm the display returns to quiet mode without a manual refresh.",
+        "A system that only works in perfect sunlight is not a solar product. It is a fair-weather demo."
       ]
     },
     {
       "id": "coronal-loop-dashboard",
       "title": "Coronal Loop Dashboard",
       "date": "2026-02-11",
-      "tags": ["dashboard", "loops", "science"],
+      "tags": [
+        "dashboard",
+        "loops",
+        "science"
+      ],
       "excerpt": "A dashboard sketch for coronal loop imagery and narrow operational copy.",
       "image": "https://commons.wikimedia.org/wiki/Special:FilePath/SDO_20260105_000634_4096_0171_%28AIA%29.jpg",
       "source": {
@@ -76,8 +141,141 @@
       },
       "body": [
         "The dashboard begins with a loop because loops are the easiest shape to over-explain. The interface has to resist that temptation.",
+        "The first version had five panels. We cut it to three: current image, trend, and operator note. Anything else can live in the archive. The display is for decisions, not proof that the team knows the vocabulary.",
         "I used this post to test tables, short paragraphs, and a source note after a high-contrast image. Solstice keeps the hierarchy clean enough for the article to stay readable.",
         "A dashboard is not a wall of facts. It is a contract about which facts deserve the wall."
+      ]
+    },
+    {
+      "id": "classroom-display-pilot",
+      "title": "Classroom Display Pilot",
+      "date": "2026-01-28",
+      "tags": [
+        "classroom",
+        "pilot",
+        "display"
+      ],
+      "excerpt": "A pilot report from a fictional school installation using a calmer solar wall display.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Classroom_with_projector.jpg",
+      "source": {
+        "label": "Classroom with projector on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:Classroom_with_projector.jpg",
+        "license": "Public domain or freely licensed media as identified by Wikimedia Commons"
+      },
+      "body": [
+        "The pilot succeeded when students stopped asking what the screen was and started asking whether today's image was live. That is the interface crossing from novelty into room behavior.",
+        "Teachers used quiet mode during arrivals and tracking mode during lab blocks. Nobody used alert mode, which is exactly what should happen during a calm week.",
+        "Next pilot change: add a small label explaining image delay without turning the wall into a troubleshooting panel."
+      ]
+    },
+    {
+      "id": "sensor-kit-unboxing",
+      "title": "Sensor Kit Unboxing Notes",
+      "date": "2026-01-11",
+      "tags": [
+        "hardware",
+        "kit",
+        "setup"
+      ],
+      "excerpt": "A hardware setup post for the fictional solar interface kit.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Sensor_kit_components.jpg",
+      "source": {
+        "label": "Sensor kit components on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:Sensor_kit_components.jpg",
+        "license": "Public domain or freely licensed media as identified by Wikimedia Commons"
+      },
+      "body": [
+        "The kit now opens in task order: mount, connect, verify, close. The old packaging opened by component type, which pleased the inventory sheet and confused everyone else.",
+        "We moved the tiny hex key into the first tray after two testers missed it and tried to improvise with a classroom screwdriver. Packaging is interface design with cardboard constraints.",
+        "The Solstice demo needs this kind of post because product sites are more believable when they include setup friction, not only polished launch notes."
+      ]
+    },
+    {
+      "id": "public-kiosk-copy",
+      "title": "Public Kiosk Copy Review",
+      "date": "2025-12-20",
+      "tags": [
+        "kiosk",
+        "copy",
+        "public"
+      ],
+      "excerpt": "A copy review for public visitors who have thirty seconds and no technical context.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Solar_kiosk_display.jpg",
+      "source": {
+        "label": "Solar kiosk display on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:Solar_kiosk_display.jpg",
+        "license": "Public domain or freely licensed media as identified by Wikimedia Commons"
+      },
+      "body": [
+        "The first kiosk draft said extreme ultraviolet. The second said light our eyes cannot see. The second kept more people reading.",
+        "Public science copy should not flatten the subject, but it should decide where the doorway is. A visitor can learn the instrument name after they understand why the image looks strange.",
+        "Approved copy: live solar image, updated every few minutes, colored to reveal structures beyond visible light."
+      ]
+    },
+    {
+      "id": "image-delay-budget",
+      "title": "Image Delay Budget",
+      "date": "2025-12-02",
+      "tags": [
+        "latency",
+        "systems",
+        "operations"
+      ],
+      "excerpt": "A technical product note on deciding how much delay a public image can tolerate.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Solar_observatory_control_room.jpg",
+      "source": {
+        "label": "Solar observatory control room on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:Solar_observatory_control_room.jpg",
+        "license": "Public domain or freely licensed media as identified by Wikimedia Commons"
+      },
+      "body": [
+        "The display can tolerate delay if it tells the truth about delay. What it cannot tolerate is a fresh-looking stale image.",
+        "We set the public badge to fresh under four minutes, delayed under fifteen, and paused after that. The maintainer panel keeps exact seconds, but the wall display uses human categories.",
+        "This post gives the demo a more technical middle without requiring code samples to carry the whole article."
+      ]
+    },
+    {
+      "id": "roof-mount-check",
+      "title": "Roof Mount Check After Wind",
+      "date": "2025-11-17",
+      "tags": [
+        "hardware",
+        "wind",
+        "maintenance"
+      ],
+      "excerpt": "A maintenance note after a windy night at the fictional observatory site.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Rooftop_solar_equipment.jpg",
+      "source": {
+        "label": "Rooftop solar equipment on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:Rooftop_solar_equipment.jpg",
+        "license": "Public domain or freely licensed media as identified by Wikimedia Commons"
+      },
+      "body": [
+        "The morning after high wind is for bolts, cable slack, enclosure seals, and the small lies told by yesterday's tidy installation photo.",
+        "Everything held except one cable loop that tapped the rail when the gusts shifted north. The fix was a shorter tie, not a new part.",
+        "Operational notes like this make the product journal feel maintained. Instruments live outside the mockup."
+      ]
+    },
+    {
+      "id": "archive-mode-search",
+      "title": "Archive Mode Search",
+      "date": "2025-10-24",
+      "tags": [
+        "archive",
+        "search",
+        "interface"
+      ],
+      "excerpt": "A feature note about searching old solar images by classroom question instead of file name.",
+      "image": "https://commons.wikimedia.org/wiki/Special:FilePath/Solar_archive_images.jpg",
+      "source": {
+        "label": "Solar archive images on Wikimedia Commons",
+        "page": "https://commons.wikimedia.org/wiki/File:Solar_archive_images.jpg",
+        "license": "Public domain or freely licensed media as identified by Wikimedia Commons"
+      },
+      "body": [
+        "The archive used to search by timestamp and channel. Teachers asked for loops, spots, storm, quiet day, and something that looks like fire.",
+        "We added curated question tags without hiding the technical metadata. Search can start human and become precise as the lesson develops.",
+        "Archive mode is where the interface stops being a display and becomes a teaching instrument."
       ]
     }
   ]
