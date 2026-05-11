@@ -16,6 +16,8 @@ image: "https://commons.wikimedia.org/wiki/Special:FilePath/SDO_20260105_000634_
 
 The dashboard begins with a loop because loops are the easiest shape to over-explain. The interface has to resist that temptation.
 
+The first version had five panels. We cut it to three: current image, trend, and operator note. Anything else can live in the archive. The display is for decisions, not proof that the team knows the vocabulary.
+
 I used this post to test tables, short paragraphs, and a source note after a high-contrast image. Solstice keeps the hierarchy clean enough for the article to stay readable.
 
 A dashboard is not a wall of facts. It is a contract about which facts deserve the wall.

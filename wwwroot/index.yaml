@@ -4,7 +4,23 @@ first-light-interface:
   en: post/first-light-interface/en.md
 filament-alert:
   en: post/filament-alert/en.md
+release-0-8-telemetry:
+  en: post/release-0-8-telemetry/en.md
 quiet-disk-mode:
   en: post/quiet-disk-mode/en.md
+maintenance-window:
+  en: post/maintenance-window/en.md
 coronal-loop-dashboard:
   en: post/coronal-loop-dashboard/en.md
+classroom-display-pilot:
+  en: post/classroom-display-pilot/en.md
+sensor-kit-unboxing:
+  en: post/sensor-kit-unboxing/en.md
+public-kiosk-copy:
+  en: post/public-kiosk-copy/en.md
+image-delay-budget:
+  en: post/image-delay-budget/en.md
+roof-mount-check:
+  en: post/roof-mount-check/en.md
+archive-mode-search:
+  en: post/archive-mode-search/en.md
