@@ -2197,7 +2197,7 @@ body {
   width: 100%;
 }
 
-.solstice-tools {
+.press-theme-controls--solstice {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
