@@ -26,7 +26,7 @@ export function mount(context = {}) {
     el.setAttribute('role', 'banner');
     el.innerHTML = `
       <div class="solstice-header__inner">
-        <a class="solstice-brand" href="?tab=posts" data-site-home>
+        <a class="solstice-brand" href="#" data-site-home>
           <div class="solstice-brand__title" data-site-title></div>
           <div class="solstice-brand__subtitle" data-site-subtitle></div>
         </a>
@@ -110,6 +110,7 @@ export function mount(context = {}) {
   tagBand.className = 'solstice-tagband solstice-footer__tagband';
   tagBand.setAttribute('data-theme-region', 'tags');
   tagBand.setAttribute('aria-label', 'Tag filters');
+  tagBand.hidden = true;
 
   if (tagBand.parentElement !== container || tagBand.nextElementSibling !== footer) {
     container.insertBefore(tagBand, footer);

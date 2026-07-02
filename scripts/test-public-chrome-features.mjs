@@ -1,0 +1,95 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const root = resolve(here, '..');
+const read = (path) => readFileSync(resolve(root, path), 'utf8');
+
+const layout = read('theme/modules/layout.js');
+const interactions = read('theme/modules/interactions.js');
+const source = `${layout}\n${interactions}`;
+
+assert.doesNotMatch(source, /href\s*=\s*["']\?tab=posts["']/);
+assert.match(layout, /data-site-home/);
+assert.match(interactions, /siteFeatureContextEnabled/);
+assert.match(interactions, /function updateHomeLinks[\s\S]*getHomeSlug[\s\S]*data-site-home/);
+
+[
+  'visitorThemeControls',
+  'footerNav',
+  'profileLinks',
+  'search',
+  'tags',
+  'toc',
+  'postMeta'
+].forEach((key) => {
+  assert.match(interactions, new RegExp(`featureEnabled\\([\\s\\S]*['"]${key}['"]`), `${key} should be gated`);
+});
+
+assert.match(interactions, /mountThemeControls\(\{ host: panel, variant: 'solstice', themeContext \}\)/);
+assert.match(interactions, /setChromeHidden\(search, true\)/);
+assert.match(
+  interactions,
+  /if \(!featureEnabled\(\{ features \}, 'tags'\) \|\| !featureEnabled\(\{ features \}, 'search'\)\) \{/,
+  'tag sidebar should hide when either tags or search is disabled'
+);
+assert.match(layout, /tagBand\.hidden = true;/, 'layout should keep tag band hidden until runtime renders it');
+assert.match(
+  interactions,
+  /featureEnabled\(params, 'tags'\) && featureEnabled\(params, 'search'\) && typeof params\.renderTagSidebar === 'function'/,
+  'index enhancement should only render tag sidebar when both tags and search are enabled'
+);
+assert.match(
+  interactions,
+  /featureEnabled\(params, 'tags'\) && featureEnabled\(params, 'search'\) && typeof params\.renderTagSidebar === 'function'\) \{[\s\S]*setChromeHidden\(getTagsRegion\(documentRef\), false\);[\s\S]*params\.renderTagSidebar/,
+  'index enhancement should unhide tags before delegating tag sidebar rendering'
+);
+assert.match(
+  interactions,
+  /else \{[\s\S]*const tags = getTagsRegion\(documentRef\);[\s\S]*tags\.innerHTML = '';[\s\S]*setChromeHidden\(tags, true\);[\s\S]*\}/,
+  'index enhancement should clear and hide tags when tags or search are disabled'
+);
+assert.match(
+  interactions,
+  /function buildCard\(\{ title, meta, translate, link, siteConfig, features \}\)[\s\S]*featureEnabled\(\{ features \}, 'tags'\) && meta \? renderTags\(meta\.tag\) : ''/,
+  'index/search cards should hide tags when tags are disabled'
+);
+assert.match(
+  interactions,
+  /function buildCard\(\{ title, meta, translate, link, siteConfig, features \}\)[\s\S]*const showPostMeta = featureEnabled\(\{ features \}, 'postMeta'\);[\s\S]*const date = showPostMeta && meta && meta\.date \? formatDisplayDate\(meta\.date\) : '';/,
+  'index/search cards should hide date metadata when postMeta is disabled'
+);
+assert.match(
+  interactions,
+  /const showPostMeta = featureEnabled\(\{ features \}, 'postMeta'\);[\s\S]*const date = showPostMeta && postMetadata && postMetadata\.date/,
+  'post date line should respect postMeta'
+);
+assert.match(
+  interactions,
+  /const showTags = featureEnabled\(\{ features \}, 'tags'\);[\s\S]*renderPostMetaCard\(title, postMetadata \|\| \{\}, markdown, \{ showTags \}\)/,
+  'shared post meta card should receive the tags feature gate'
+);
+assert.match(
+  interactions,
+  /if \(!featureEnabled\(\{ features \}, 'toc'\)\) \{[\s\S]*clearSolsticeToc\(toc\);[\s\S]*toc\.hidden = true;/,
+  'static tab TOC should respect toc'
+);
+assert.match(
+  interactions,
+  /function updateHomeLinks[\s\S]*__press_get_home_slug[\s\S]*if \(!homeSlug\) return false;[\s\S]*const href = withLangParam\(`\?tab=\$\{encodeURIComponent\(homeSlug\)\}`\);/,
+  'identity refresh should use the runtime home helper or preserve existing home hrefs'
+);
+assert.match(
+  interactions,
+  /function renderNavLinks[\s\S]*const homeSlug = typeof getHomeSlug === 'function' \? getHomeSlug\(\) : 'posts';[\s\S]*updateHomeLinks\(nav\.ownerDocument \|\| defaultDocument, \{ \.\.\.params, getHomeSlug: \(\) => homeSlug \}\);/,
+  'home links should preserve the same posts fallback used by nav rendering'
+);
+assert.match(
+  interactions,
+  /const column = root\.closest \? root\.closest\('\[data-footer-column="nav"\]'\) : null;[\s\S]*setChromeHidden\(column, true\);[\s\S]*setChromeHidden\(column, false\);/,
+  'footerNav=false should hide and restore the whole footer nav column'
+);
+
+console.log('ok - Solstice public chrome feature gates');
