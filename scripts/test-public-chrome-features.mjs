@@ -43,6 +43,11 @@ assert.match(
 );
 assert.match(
   interactions,
+  /featureEnabled\(params, 'tags'\) && featureEnabled\(params, 'search'\) && typeof params\.renderTagSidebar === 'function'\) \{[\s\S]*setChromeHidden\(getTagsRegion\(documentRef\), false\);[\s\S]*params\.renderTagSidebar/,
+  'index enhancement should unhide tags before delegating tag sidebar rendering'
+);
+assert.match(
+  interactions,
   /else \{[\s\S]*const tags = getTagsRegion\(documentRef\);[\s\S]*tags\.innerHTML = '';[\s\S]*setChromeHidden\(tags, true\);[\s\S]*\}/,
   'index enhancement should clear and hide tags when tags or search are disabled'
 );
@@ -70,6 +75,21 @@ assert.match(
   interactions,
   /if \(!featureEnabled\(\{ features \}, 'toc'\)\) \{[\s\S]*clearSolsticeToc\(toc\);[\s\S]*toc\.hidden = true;/,
   'static tab TOC should respect toc'
+);
+assert.match(
+  interactions,
+  /function updateHomeLinks[\s\S]*__press_get_home_slug[\s\S]*if \(!homeSlug\) return false;[\s\S]*const href = withLangParam\(`\?tab=\$\{encodeURIComponent\(homeSlug\)\}`\);/,
+  'identity refresh should use the runtime home helper or preserve existing home hrefs'
+);
+assert.match(
+  interactions,
+  /function renderNavLinks[\s\S]*const homeSlug = typeof getHomeSlug === 'function' \? getHomeSlug\(\) : 'posts';[\s\S]*updateHomeLinks\(nav\.ownerDocument \|\| defaultDocument, \{ \.\.\.params, getHomeSlug: \(\) => homeSlug \}\);/,
+  'home links should preserve the same posts fallback used by nav rendering'
+);
+assert.match(
+  interactions,
+  /const column = root\.closest \? root\.closest\('\[data-footer-column="nav"\]'\) : null;[\s\S]*setChromeHidden\(column, true\);[\s\S]*setChromeHidden\(column, false\);/,
+  'footerNav=false should hide and restore the whole footer nav column'
 );
 
 console.log('ok - Solstice public chrome feature gates');

@@ -60,9 +60,14 @@ function setChromeHidden(element, hidden) {
 
 function updateHomeLinks(documentRef = defaultDocument, params = {}) {
   if (!documentRef || typeof documentRef.querySelectorAll !== 'function') return false;
-  const getHomeSlug = typeof params.getHomeSlug === 'function' ? params.getHomeSlug : null;
+  const getHomeSlug = typeof params.getHomeSlug === 'function'
+    ? params.getHomeSlug
+    : (params.window && typeof params.window.__press_get_home_slug === 'function'
+        ? params.window.__press_get_home_slug
+        : (defaultWindow && typeof defaultWindow.__press_get_home_slug === 'function' ? defaultWindow.__press_get_home_slug : null));
   const homeSlug = getHomeSlug ? String(getHomeSlug() || '').trim() : '';
-  const href = homeSlug ? withLangParam(`?tab=${encodeURIComponent(homeSlug)}`) : '#';
+  if (!homeSlug) return false;
+  const href = withLangParam(`?tab=${encodeURIComponent(homeSlug)}`);
   documentRef.querySelectorAll('[data-site-home]').forEach((link) => {
     try { link.setAttribute('href', href); } catch (_) {}
   });
@@ -620,7 +625,7 @@ function renderNavLinks(nav, tabsBySlug, activeSlug, postsEnabled, getHomeSlug, 
   if (!nav) return;
   const items = [];
   const homeSlug = typeof getHomeSlug === 'function' ? getHomeSlug() : 'posts';
-  updateHomeLinks(nav.ownerDocument || defaultDocument, { ...params, getHomeSlug });
+  updateHomeLinks(nav.ownerDocument || defaultDocument, { ...params, getHomeSlug: () => homeSlug });
   if (postsEnabled()) {
     items.push({ slug: 'posts', label: t('ui.allPosts'), href: withLangParam('?tab=posts') });
   }
@@ -635,14 +640,17 @@ function renderNavLinks(nav, tabsBySlug, activeSlug, postsEnabled, getHomeSlug, 
 function renderFooterLinks(root, tabsBySlug, postsEnabled, getHomeSlug, getHomeLabel, params = {}) {
   if (!root) return;
   const host = root.closest ? root.closest('.solstice-footer__nav') || root : root;
+  const column = root.closest ? root.closest('[data-footer-column="nav"]') : null;
   if (!featureEnabled(params, 'footerNav')) {
     root.innerHTML = '';
     setChromeHidden(root, true);
     setChromeHidden(host, true);
+    setChromeHidden(column, true);
     return;
   }
   setChromeHidden(root, false);
   setChromeHidden(host, false);
+  setChromeHidden(column, false);
   const links = [];
   const homeSlug = getHomeSlug();
   const homeLabel = getHomeLabel();
@@ -980,6 +988,7 @@ function mountHooks(documentRef = defaultDocument, windowRef = defaultWindow) {
     try { if (featureEnabled(params, 'search') && typeof params.setupSearch === 'function') params.setupSearch(params.allEntries || []); } catch (_) {}
     try {
       if (featureEnabled(params, 'tags') && featureEnabled(params, 'search') && typeof params.renderTagSidebar === 'function') {
+        setChromeHidden(getTagsRegion(documentRef), false);
         params.renderTagSidebar(params.postsIndexMap || {});
       } else {
         const tags = getTagsRegion(documentRef);
