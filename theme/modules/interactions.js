@@ -20,7 +20,7 @@ import {
 } from '../../../js/theme.js';
 import { hydratePostImages, hydratePostVideos, applyLazyLoadingIn, hydrateCardCovers } from '../../../js/post-render.js';
 import { renderPostMetaCard, renderOutdatedCard } from '../../../js/templates.js';
-import { attachHoverTooltip, renderTagSidebar as renderDefaultTags } from '../../../js/tags.js';
+import { attachHoverTooltip } from '../../../js/tags.js';
 import { prefersReducedMotion } from '../../../js/dom-utils.js';
 import { renderPressPostCardHtml } from '../../../js/post-card-html.js';
 import { siteFeatureContextEnabled } from '../../../js/site-features.js';
@@ -553,6 +553,13 @@ function hydrateSolsticeCardExcerpts(entries = [], context = {}) {
   });
 }
 
+function filterEntriesWithPostHref(entries = [], context = {}) {
+  return (Array.isArray(entries) ? entries : []).filter(([, meta]) => {
+    const location = meta && meta.location ? String(meta.location) : '';
+    return !!(location && getRouteHref(context, 'getPostHref', location));
+  });
+}
+
 function buildPagination({ page, totalPages, makeHref }) {
   if (!totalPages || totalPages <= 1) return '';
   const mkHref = (p) => {
@@ -1016,7 +1023,15 @@ function mountHooks(documentRef = defaultDocument, windowRef = defaultWindow) {
     setChromeHidden(getTagsRegion(documentRef), false);
     const render = utilities && typeof utilities.renderTagSidebar === 'function'
       ? utilities.renderTagSidebar
-      : renderDefaultTags;
+      : null;
+    if (!render) {
+      const tags = getTagsRegion(documentRef);
+      if (tags) {
+        tags.innerHTML = '';
+        setChromeHidden(tags, true);
+      }
+      return true;
+    }
     try { render(postsIndex || {}); } catch (_) {}
     return true;
   };
@@ -1136,7 +1151,7 @@ function mountHooks(documentRef = defaultDocument, windowRef = defaultWindow) {
       else hydrateCardCovers(getRoleElement('main', documentRef));
     } catch (_) {}
     try {
-      hydrateSolsticeCardExcerpts(params.entries || [], { ...params, container: target, document: documentRef });
+      hydrateSolsticeCardExcerpts(filterEntriesWithPostHref(params.entries || [], params), { ...params, container: target, document: documentRef });
     } catch (_) {}
     return true;
   };
@@ -1169,7 +1184,7 @@ function mountHooks(documentRef = defaultDocument, windowRef = defaultWindow) {
       else hydrateCardCovers(getRoleElement('main', documentRef));
     } catch (_) {}
     try {
-      hydrateSolsticeCardExcerpts(params.entries || [], { ...params, container: target, document: documentRef });
+      hydrateSolsticeCardExcerpts(filterEntriesWithPostHref(params.entries || [], params), { ...params, container: target, document: documentRef });
     } catch (_) {}
     return true;
   };
