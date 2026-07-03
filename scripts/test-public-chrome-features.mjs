@@ -29,6 +29,7 @@ assert.equal(releaseExample.contractVersion, 4);
 assert.equal(releaseExample.engines.press, '>=3.4.130 <4.0.0');
 assert.doesNotMatch(source, /[?&](?:tab|id)=/, 'v4 packaged source should use router href helpers for public routes');
 assert.doesNotMatch(source, /getRouteHref[\s\S]{0,160}\|\|\s*'#'/, 'v4 route helper null results should not become hash dead links');
+assert.doesNotMatch(layout, /<a[^>]*href="#"[^>]*data-site-home|<a[^>]*data-site-home[^>]*href="#"/, 'brand home link should not start as a hash dead link');
 assert.match(layout, /data-site-home/);
 assert.match(interactions, /siteFeatureContextEnabled/);
 assert.match(interactions, /function getRouter[\s\S]*ctx\.router/);
@@ -103,8 +104,8 @@ assert.match(
 );
 assert.match(
   interactions,
-  /function updateHomeLinks[\s\S]*getRouteHref\(params, 'getHomeHref'\)[\s\S]*if \(!href\) return false;[\s\S]*data-site-home/,
-  'identity refresh should use the v4 home href helper or preserve existing home hrefs'
+  /function updateHomeLinks[\s\S]*getRouteHref\(params, 'getHomeHref'\)[\s\S]*setHomeLinkHref\(link, href\)/,
+  'identity refresh should use the v4 home href helper and disable home links when no href is available'
 );
 assert.match(
   interactions,
@@ -116,6 +117,47 @@ assert.match(
   /const column = root\.closest \? root\.closest\('\[data-footer-column="nav"\]'\) : null;[\s\S]*setChromeHidden\(column, true\);[\s\S]*setChromeHidden\(column, false\);/,
   'footerNav=false should hide and restore the whole footer nav column'
 );
+
+const updateHomeLinksSource = interactions.slice(
+  interactions.indexOf('function setHomeLinkHref'),
+  interactions.indexOf('\n\nfunction getRegion')
+);
+const routerHelpersSource = interactions.slice(
+  interactions.indexOf('function getRouter'),
+  interactions.indexOf('\n\nfunction setChromeHidden')
+);
+assert.ok(updateHomeLinksSource.includes('function updateHomeLinks'), 'updateHomeLinks source should be available for behavior probe');
+assert.ok(routerHelpersSource.includes('function routerFunction'), 'router helper source should be available for behavior probe');
+const updateHomeLinks = new Function(
+  `let activeThemeContext = null; ${routerHelpersSource}\n${updateHomeLinksSource}; return updateHomeLinks;`
+)();
+const homeLink = {
+  attributes: new Map([['href', '?tab=about']]),
+  setAttribute(name, value) {
+    this.attributes.set(String(name), String(value));
+  },
+  removeAttribute(name) {
+    this.attributes.delete(String(name));
+  },
+  getAttribute(name) {
+    return this.attributes.has(String(name)) ? this.attributes.get(String(name)) : null;
+  }
+};
+const fakeDocument = {
+  querySelectorAll(selector) {
+    return selector === '[data-site-home]' ? [homeLink] : [];
+  }
+};
+assert.equal(updateHomeLinks(fakeDocument, {}), false, 'identity refresh without home helper should not create a home href');
+assert.equal(homeLink.getAttribute('href'), null, 'identity refresh without home helper should remove stale home hrefs');
+assert.equal(homeLink.getAttribute('aria-disabled'), 'true', 'identity refresh without home helper should disable home links');
+assert.equal(homeLink.getAttribute('tabindex'), '-1', 'identity refresh without home helper should remove home links from tab order');
+assert.equal(updateHomeLinks(fakeDocument, { ctx: { router: { getHomeHref: () => '?tab=product&lang=en' } } }), true, 'ctx.router home href helper should update home links');
+assert.equal(homeLink.getAttribute('href'), '?tab=product&lang=en', 'ctx.router withLangParam should write the resolved home href');
+assert.equal(homeLink.getAttribute('aria-disabled'), null, 'valid home helper should clear disabled state');
+assert.equal(homeLink.getAttribute('tabindex'), null, 'valid home helper should restore normal focus behavior');
+assert.equal(updateHomeLinks(fakeDocument, { ctx: { router: { getHomeHref: () => null } } }), false, 'null home helper should disable home links');
+assert.equal(homeLink.getAttribute('href'), null, 'null home helper should remove stale home hrefs');
 
 class TestElement {
   constructor(tagName = 'div', ownerDocument = null) {
