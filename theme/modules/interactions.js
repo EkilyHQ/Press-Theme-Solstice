@@ -49,6 +49,23 @@ function featureEnabled(params = {}, key) {
   return siteFeatureContextEnabled(features, key);
 }
 
+function getRouter(params = {}) {
+  return (params && params.ctx && params.ctx.router)
+    || (params && params.context && params.context.router)
+    || (activeThemeContext && activeThemeContext.router)
+    || {};
+}
+
+function routerFunction(params = {}, name) {
+  const router = getRouter(params);
+  return router && typeof router[name] === 'function' ? router[name] : null;
+}
+
+function makeRuntimeHref(params = {}, href = '#') {
+  const withLang = routerFunction(params, 'withLangParam');
+  return withLang ? withLang(href) : withLangParam(href);
+}
+
 function setChromeHidden(element, hidden) {
   if (!element) return;
   try { element.hidden = !!hidden; } catch (_) {}
@@ -60,14 +77,15 @@ function setChromeHidden(element, hidden) {
 
 function updateHomeLinks(documentRef = defaultDocument, params = {}) {
   if (!documentRef || typeof documentRef.querySelectorAll !== 'function') return false;
-  const getHomeSlug = typeof params.getHomeSlug === 'function'
+  const getHomeSlug = routerFunction(params, 'getHomeSlug')
+    || (typeof params.getHomeSlug === 'function'
     ? params.getHomeSlug
     : (params.window && typeof params.window.__press_get_home_slug === 'function'
         ? params.window.__press_get_home_slug
-        : (defaultWindow && typeof defaultWindow.__press_get_home_slug === 'function' ? defaultWindow.__press_get_home_slug : null));
+        : (defaultWindow && typeof defaultWindow.__press_get_home_slug === 'function' ? defaultWindow.__press_get_home_slug : null)));
   const homeSlug = getHomeSlug ? String(getHomeSlug() || '').trim() : '';
   if (!homeSlug) return false;
-  const href = withLangParam(`?tab=${encodeURIComponent(homeSlug)}`);
+  const href = makeRuntimeHref(params, `?tab=${encodeURIComponent(homeSlug)}`);
   documentRef.querySelectorAll('[data-site-home]').forEach((link) => {
     try { link.setAttribute('href', href); } catch (_) {}
   });
@@ -454,7 +472,8 @@ function buildCard({ title, meta, translate, link, siteConfig, features }) {
   const excerpt = meta && meta.excerpt ? String(meta.excerpt) : '';
   const showPostMeta = featureEnabled({ features }, 'postMeta');
   const date = showPostMeta && meta && meta.date ? formatDisplayDate(meta.date) : '';
-  const tags = featureEnabled({ features }, 'tags') && meta ? renderTags(meta.tag) : '';
+  const showTags = featureEnabled({ features }, 'tags') && featureEnabled({ features }, 'search');
+  const tags = showTags && meta ? renderTags(meta.tag) : '';
   const coverHtml = renderCardCover(meta, title, siteConfig);
   return renderPressPostCardHtml({
     title: String(title || 'Untitled'),
@@ -624,14 +643,16 @@ function decorateArticle(container, translate, utilities, markdown, meta, title)
 function renderNavLinks(nav, tabsBySlug, activeSlug, postsEnabled, getHomeSlug, params = {}) {
   if (!nav) return;
   const items = [];
-  const homeSlug = typeof getHomeSlug === 'function' ? getHomeSlug() : 'posts';
+  const getHome = routerFunction(params, 'getHomeSlug') || (typeof getHomeSlug === 'function' ? getHomeSlug : null);
+  const postsEnabledFn = routerFunction(params, 'postsEnabled') || (typeof postsEnabled === 'function' ? postsEnabled : () => true);
+  const homeSlug = getHome ? getHome() : 'posts';
   updateHomeLinks(nav.ownerDocument || defaultDocument, { ...params, getHomeSlug: () => homeSlug });
-  if (postsEnabled()) {
-    items.push({ slug: 'posts', label: t('ui.allPosts'), href: withLangParam('?tab=posts') });
+  if (postsEnabledFn()) {
+    items.push({ slug: 'posts', label: t('ui.allPosts'), href: makeRuntimeHref(params, '?tab=posts') });
   }
   Object.entries(tabsBySlug || {}).forEach(([slug, info]) => {
     const label = info && info.title ? String(info.title) : slug;
-    items.push({ slug, label, href: withLangParam(`?tab=${encodeURIComponent(slug)}`) });
+    items.push({ slug, label, href: makeRuntimeHref(params, `?tab=${encodeURIComponent(slug)}`) });
   });
   nav.innerHTML = items.map(item => `<a class="solstice-nav__item${item.slug === activeSlug ? ' is-current' : ''}" data-tab="${escapeHtml(item.slug)}" href="${escapeHtml(item.href)}">${escapeHtml(item.label)}</a>`).join('');
   nav.setAttribute('data-active', activeSlug || homeSlug);
@@ -652,15 +673,19 @@ function renderFooterLinks(root, tabsBySlug, postsEnabled, getHomeSlug, getHomeL
   setChromeHidden(host, false);
   setChromeHidden(column, false);
   const links = [];
-  const homeSlug = getHomeSlug();
-  const homeLabel = getHomeLabel();
-  if (homeSlug) links.push({ href: withLangParam(`?tab=${encodeURIComponent(homeSlug)}`), label: homeLabel });
+  const getHome = routerFunction(params, 'getHomeSlug') || getHomeSlug;
+  const getLabel = routerFunction(params, 'getHomeLabel') || getHomeLabel;
+  const homeSlug = typeof getHome === 'function' ? getHome() : '';
+  const homeLabel = typeof getLabel === 'function' ? getLabel() : '';
+  if (homeSlug) links.push({ href: makeRuntimeHref(params, `?tab=${encodeURIComponent(homeSlug)}`), label: homeLabel });
   Object.entries(tabsBySlug || {}).forEach(([slug, info]) => {
     if (slug === homeSlug) return;
     const label = info && info.title ? String(info.title) : slug;
-    links.push({ href: withLangParam(`?tab=${encodeURIComponent(slug)}`), label });
+    links.push({ href: makeRuntimeHref(params, `?tab=${encodeURIComponent(slug)}`), label });
   });
-  if (featureEnabled(params, 'search')) links.push({ href: withLangParam('?tab=search'), label: t('ui.searchTab') });
+  const searchEnabledFn = routerFunction(params, 'searchEnabled');
+  const searchEnabled = searchEnabledFn ? searchEnabledFn() : featureEnabled(params, 'search');
+  if (searchEnabled) links.push({ href: makeRuntimeHref(params, '?tab=search'), label: t('ui.searchTab') });
   root.innerHTML = `<ul class="solstice-footer__list">${links.map(link => `<li><a href="${escapeHtml(link.href)}">${escapeHtml(link.label)}</a></li>`).join('')}</ul>`;
 }
 
@@ -892,9 +917,9 @@ function mountHooks(documentRef = defaultDocument, windowRef = defaultWindow) {
   hooks.showElement = ({ element }) => fadeIn(element);
   hooks.hideElement = ({ element, onDone }) => { fadeOut(element, onDone); return true; };
 
-  hooks.renderSiteIdentity = ({ config, getHomeSlug, features }) => {
+  hooks.renderSiteIdentity = ({ config, ctx, getHomeSlug, features }) => {
     currentSiteConfig = config || currentSiteConfig;
-    updateHomeLinks(documentRef, { getHomeSlug, features });
+    updateHomeLinks(documentRef, { ctx, getHomeSlug, features });
     const title = localized(config, 'siteTitle');
     const subtitle = localized(config, 'siteSubtitle');
     const titleEl = documentRef.querySelector('[data-site-title]');
@@ -1001,17 +1026,17 @@ function mountHooks(documentRef = defaultDocument, windowRef = defaultWindow) {
     return true;
   };
 
-  hooks.renderTabs = ({ tabsBySlug, activeSlug, getHomeSlug, postsEnabled, features }) => {
+  hooks.renderTabs = ({ tabsBySlug, activeSlug, ctx, getHomeSlug, postsEnabled, features }) => {
     const nav = getNavRegion(documentRef);
     if (!nav) return false;
-    renderNavLinks(nav, tabsBySlug, activeSlug, postsEnabled, getHomeSlug, { features });
+    renderNavLinks(nav, tabsBySlug, activeSlug, postsEnabled, getHomeSlug, { ctx, features });
     return true;
   };
 
-  hooks.renderFooterNav = ({ tabsBySlug, postsEnabled, getHomeSlug, getHomeLabel, features }) => {
+  hooks.renderFooterNav = ({ tabsBySlug, ctx, postsEnabled, getHomeSlug, getHomeLabel, features }) => {
     const footerNav = documentRef.getElementById('footerNav');
     if (!footerNav) return false;
-    renderFooterLinks(footerNav, tabsBySlug, postsEnabled, getHomeSlug, getHomeLabel, { features });
+    renderFooterLinks(footerNav, tabsBySlug, postsEnabled, getHomeSlug, getHomeLabel, { ctx, features });
     return true;
   };
 
@@ -1028,7 +1053,7 @@ function mountHooks(documentRef = defaultDocument, windowRef = defaultWindow) {
     const hero = renderHeroImage(postMetadata, title, siteConfig);
     const showPostMeta = featureEnabled({ features }, 'postMeta');
     const date = showPostMeta && postMetadata && postMetadata.date ? formatDisplayDate(postMetadata.date) : '';
-    const showTags = featureEnabled({ features }, 'tags');
+    const showTags = featureEnabled({ features }, 'tags') && featureEnabled({ features }, 'search');
     const tagMarkup = showTags && postMetadata ? renderTags(postMetadata.tag) : '';
     const metaCard = showPostMeta ? renderPostMetaCard(title, postMetadata || {}, markdown, { showTags }) : '';
     const outdatedCard = showPostMeta ? renderOutdatedCard(postMetadata || {}, siteConfig) : '';
