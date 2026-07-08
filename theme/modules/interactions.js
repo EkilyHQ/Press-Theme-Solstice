@@ -1226,7 +1226,7 @@ function mountHooks(documentRef = defaultDocument, windowRef = defaultWindow) {
     try { if (utilities && typeof utilities.applyLangHints === 'function') utilities.applyLangHints(body); } catch (_) {}
     try {
       if (utilities && typeof utilities.hydrateInternalLinkCards === 'function') {
-        const makeHref = utilities.makeLangHref || ((loc) => getRouteHref({ ctx, features }, 'getPostHref', loc));
+        const makeHref = (loc) => getRouteHref({ ctx, features }, 'getPostHref', loc);
         const fetchMarkdown = utilities.fetchMarkdown || (() => Promise.resolve(''));
         utilities.hydrateInternalLinkCards(body, {
           allowedLocations: allowedLocations || new Set(),

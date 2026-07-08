@@ -121,6 +121,16 @@ assert.match(
 );
 assert.match(
   interactions,
+  /const makeHref = \(loc\) => getRouteHref\(\{ ctx, features \}, 'getPostHref', loc\);/,
+  'static tab link cards should route through the v4 post href helper'
+);
+assert.doesNotMatch(
+  interactions,
+  /utilities\.makeLangHref\s*\|\|[\s\S]{0,120}getRouteHref\(\{ ctx, features \}, 'getPostHref'/,
+  'static tab link cards should not prefer legacy makeLangHref over v4 route helpers'
+);
+assert.match(
+  interactions,
   /const column = root\.closest \? root\.closest\('\[data-footer-column="nav"\]'\) : null;[\s\S]*setChromeHidden\(column, true\);[\s\S]*setChromeHidden\(column, false\);/,
   'footerNav=false should hide and restore the whole footer nav column'
 );
@@ -312,5 +322,31 @@ api.effects.renderSearchResults({
 });
 assert.doesNotMatch(searchMain.innerHTML, /href="(?:#|)"/, 'null search route helpers should not render empty or hash links');
 assert.match(searchMain.innerHTML, /aria-disabled="true"/, 'null search pagination helpers should render disabled text controls');
+
+const staticMain = doc.createElement('main');
+let internalCardHref = '';
+api.effects.renderStaticTabView({
+  containers: { mainElement: staticMain },
+  title: 'Static',
+  markdownHtml: '<p><a href="?id=product.md">Product</a></p>',
+  features: allFeatures,
+  ctx: {
+    router: {
+      prefix: '?id=',
+      getPostHref(location) {
+        return `${this.prefix}${location}&lang=ja`;
+      }
+    }
+  },
+  utilities: {
+    hydrateInternalLinkCards(_body, options = {}) {
+      internalCardHref = options.makeHref('product.md');
+    },
+    makeLangHref() {
+      throw new Error('legacy makeLangHref should not be used for v4 link cards');
+    }
+  }
+});
+assert.equal(internalCardHref, '?id=product.md&lang=ja', 'static tab internal link cards should use ctx.router.getPostHref with receiver state');
 
 console.log('ok - Solstice public chrome feature gates');
