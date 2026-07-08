@@ -26,7 +26,7 @@ export function mount(context = {}) {
     el.setAttribute('role', 'banner');
     el.innerHTML = `
       <div class="solstice-header__inner">
-        <a class="solstice-brand" href="#" data-site-home>
+        <a class="solstice-brand" data-site-home aria-disabled="true" tabindex="-1">
           <div class="solstice-brand__title" data-site-title></div>
           <div class="solstice-brand__subtitle" data-site-subtitle></div>
         </a>
