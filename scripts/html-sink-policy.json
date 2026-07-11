@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 1,
+  "decision": "reviewed-exact-fingerprint-baseline-with-zero-growth",
+  "scope": ["theme/**/*.js", "theme/**/*.mjs"],
+  "rationale": "Solstice intentionally renders Press-sanitized content, reviewed Press renderer output, and owned escaped or static templates. Exact normalized semantic AST fingerprints pin each sink to its full lexical owner and full-file AST path so equivalent source cannot move between contexts without review.",
+  "wrappers": [
+    {
+      "name": "renderLoader",
+      "rationale": "renderLoader owns a live-DOM status template; every call is fingerprinted so message-source or caller growth requires review."
+    },
+    {
+      "name": "renderStaticView",
+      "rationale": "renderStaticView combines escaped theme chrome with Press-rendered static content; every call remains an explicit reviewed boundary."
+    },
+    {
+      "name": "showToc",
+      "rationale": "showToc accepts Press-rendered table-of-contents markup and owns the fallback live-DOM insertion path, so all callers are fingerprinted."
+    }
+  ],
+  "expectedKinds": {
+    "html-wrapper-call:renderLoader": 2,
+    "html-wrapper-call:renderStaticView": 1,
+    "html-wrapper-call:showToc": 2,
+    "innerHTML-write": 23
+  },
+  "approved": [
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:clearSolsticeToc",
+      "context": "function:clearSolsticeToc@path:body[62]/body/body[1]/alternate/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:4d9bf3d7a9672e4f573d1243081497133bc3a0615302825b3163103a1b2965cd",
+      "occurrence": 1,
+      "disposition": "empty-clear",
+      "rationale": "The table-of-contents fallback assigns only a constant empty string when the component has no clear method."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.enhanceIndexLayout",
+      "context": "function:mountHooks/assignment:hooks.enhanceIndexLayout@path:body[66]/body/body[14]/expression/right/body/body[4]/block/body[0]/alternate/body[1]/consequent/body[0]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:a4879deabfdab85376730ed9bbe71987b1f9359f4d47a42145d090874dd0e181",
+      "occurrence": 1,
+      "disposition": "empty-clear",
+      "rationale": "The tag-sidebar enhancement fallback assigns only a constant empty string before hiding its region."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.handleViewChange",
+      "context": "function:mountHooks/assignment:hooks.handleViewChange@path:body[66]/body/body[12]/expression/right/body/body[6]/consequent/body[1]/consequent/body[0]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:ad1f73e26ed28d7adc8e6fc0c9689d7e6fd682722bedda99df27fa8efb9ceb79",
+      "occurrence": 1,
+      "disposition": "empty-clear",
+      "rationale": "The disabled tag-sidebar view assigns only a constant empty string before hiding its region."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderErrorState",
+      "context": "function:mountHooks/assignment:hooks.renderErrorState@path:body[66]/body/body[11]/expression/right/body/body[5]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:4fbd6cd9c9fbec5754fbedb449a5f8bc8288fc82a5e54fd816bd77ec28cb19b2",
+      "occurrence": 1,
+      "disposition": "escaped-theme-template",
+      "rationale": "Error headings, bodies, action labels, and localized action hrefs are escaped before insertion."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderIndexView",
+      "context": "function:mountHooks/assignment:hooks.renderIndexView@path:body[66]/body/body[21]/expression/right/body/body[3]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:9c1a72ab57353fdffd5568a45837c8f84af6a3d44517b0374e820f3c9f2f02a8",
+      "occurrence": 1,
+      "disposition": "escaped-theme-template",
+      "rationale": "Index cards and pagination are produced by Solstice's owned render helpers before insertion into fixed layout markup."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderPostLoadingState",
+      "context": "function:mountHooks/assignment:hooks.renderPostLoadingState@path:body[66]/body/body[17]/expression/right/body/body[1]/expression",
+      "kind": "html-wrapper-call:renderLoader",
+      "fingerprint": "sha256:4f3a6e7da73ef8d60fd65feb38466adaa67eb085d69b07ad62f07a030045e589",
+      "occurrence": 1,
+      "disposition": "trusted-wrapper-call",
+      "rationale": "The post-loading hook supplies a first-party translated status string to the owned loader template."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderPostTOC",
+      "context": "function:mountHooks/assignment:hooks.renderPostTOC@path:body[66]/body/body[10]/expression/right/body/body[2]/expression",
+      "kind": "html-wrapper-call:showToc",
+      "fingerprint": "sha256:919690a8e2a3516a348301b90a6314162d8fc3b4108527a9dd44483eeeb04df5",
+      "occurrence": 1,
+      "disposition": "trusted-wrapper-call",
+      "rationale": "The post-view hook passes Press-rendered table-of-contents markup to the owned component or fallback renderer."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderPostView",
+      "context": "function:mountHooks/assignment:hooks.renderPostView@path:body[66]/body/body[18]/expression/right/body/body[10]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:03f7b1bd2bb3907ba16a771bda9d4fd538617dde298e948be9ebbb325d214049",
+      "occurrence": 1,
+      "disposition": "press-renderer-output",
+      "rationale": "The post-view template escapes theme-owned metadata and embeds markdownHtml supplied by Press's reviewed renderer."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderSearchResults",
+      "context": "function:mountHooks/assignment:hooks.renderSearchResults@path:body[66]/body/body[23]/expression/right/body/body[4]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:c82964a82d20e1123fa32372f6805315f22797bba7394a14905986df6a231c43",
+      "occurrence": 1,
+      "disposition": "escaped-theme-template",
+      "rationale": "Search summaries are escaped, while cards and pagination are produced by Solstice's owned escaped render helpers."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderStaticTabLoadingState",
+      "context": "function:mountHooks/assignment:hooks.renderStaticTabLoadingState@path:body[66]/body/body[25]/expression/right/body/body[1]/expression",
+      "kind": "html-wrapper-call:renderLoader",
+      "fingerprint": "sha256:b61c532f567c953fb05515afd343c20dc48b6a2155e3d42b110bc58410cfc91c",
+      "occurrence": 1,
+      "disposition": "trusted-wrapper-call",
+      "rationale": "The static-tab loading hook supplies a first-party translated status string to the owned loader template."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderStaticTabView",
+      "context": "function:mountHooks/assignment:hooks.renderStaticTabView@path:body[66]/body/body[26]/expression/right/body/body[13]/consequent/body[0]/alternate/consequent/body[0]/expression",
+      "kind": "html-wrapper-call:showToc",
+      "fingerprint": "sha256:3d0824382e740c8f1cb1d0dd8829d6c3bdb633b733ca11727ea94d3404499f3b",
+      "occurrence": 1,
+      "disposition": "trusted-wrapper-call",
+      "rationale": "The static-tab hook passes Press-rendered table-of-contents markup to the owned component or fallback renderer."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderStaticTabView",
+      "context": "function:mountHooks/assignment:hooks.renderStaticTabView@path:body[66]/body/body[26]/expression/right/body/body[4]/expression",
+      "kind": "html-wrapper-call:renderStaticView",
+      "fingerprint": "sha256:b1f49ecdd6553f9a2a290348dba5297f98c68649191cb5c94a7a8da59051c772",
+      "occurrence": 1,
+      "disposition": "trusted-wrapper-call",
+      "rationale": "The static-tab hook passes an escaped heading and Press-rendered body HTML through the reviewed renderer boundary."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderTagSidebar",
+      "context": "function:mountHooks/assignment:hooks.renderTagSidebar@path:body[66]/body/body[13]/expression/right/body/body[0]/consequent/body[1]/consequent/body[0]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:5d0e36db9d2c8a10243ec19b425bb602911ed81b99da4f179c6723b412c9c345",
+      "occurrence": 1,
+      "disposition": "empty-clear",
+      "rationale": "The disabled tag-sidebar render assigns only a constant empty string before hiding its region."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:mountHooks/assignment:hooks.renderTagSidebar",
+      "context": "function:mountHooks/assignment:hooks.renderTagSidebar@path:body[66]/body/body[13]/expression/right/body/body[3]/consequent/body[1]/consequent/body[0]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:d79ae283ab406fd2e8850fd403d60efac23cd75519c9ad5872d82e0d67724272",
+      "occurrence": 1,
+      "disposition": "empty-clear",
+      "rationale": "The missing tag-sidebar renderer assigns only a constant empty string before hiding its region."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:populateThemePackOptions/variable:applyOptions",
+      "context": "function:populateThemePackOptions/variable:applyOptions@path:body[59]/body/body[6]/declarations[0]/init/body/body[0]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:89547ea91b3c1733554571dd1f65663f4d082d81f3f3de5f402446b35105285a",
+      "occurrence": 1,
+      "disposition": "empty-clear",
+      "rationale": "The theme-pack option refresh assigns only a constant empty string before appending option elements through DOM APIs."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:renderFooterLinks",
+      "context": "function:renderFooterLinks@path:body[54]/body/body[19]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:0caad86c6d2c54894919965a5bdedc4928213c6fa4cd5e3f36b576d09a2ef743",
+      "occurrence": 1,
+      "disposition": "escaped-theme-template",
+      "rationale": "Footer navigation hrefs and labels are escaped before insertion into the owned list and anchor template."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:renderFooterLinks",
+      "context": "function:renderFooterLinks@path:body[54]/body/body[3]/consequent/body[0]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:71bf41dfbdb07335677be83322a883e1787a6e4de0dfab35567a819c1218789c",
+      "occurrence": 1,
+      "disposition": "empty-clear",
+      "rationale": "The disabled footer-navigation branch assigns only a constant empty string before hiding its regions."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:renderLinksList",
+      "context": "function:renderLinksList@path:body[55]/body/body[2]/consequent/body[0]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:083e29e086e431c31428c7a3717cd4c2b63e783354ce228a25f00968ad9d4ede",
+      "occurrence": 1,
+      "disposition": "empty-clear",
+      "rationale": "The disabled profile-links branch assigns only a constant empty string before hiding its region."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:renderLinksList",
+      "context": "function:renderLinksList@path:body[55]/body/body[5]/consequent/body[0]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:65d0dbc40e7c212781cbef5f3872087ada2e30de67daabac085388c0a91002c0",
+      "occurrence": 1,
+      "disposition": "trusted-translation-template",
+      "rationale": "The empty-profile-list placeholder renders a versioned first-party translation value inside fixed list-item markup."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:renderLinksList",
+      "context": "function:renderLinksList@path:body[55]/body/body[6]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:51562af971d48271fa12e09c5bb6692521c543fecf95f43dcd030f6dd5c5f152",
+      "occurrence": 1,
+      "disposition": "escaped-theme-template",
+      "rationale": "Profile URLs pass sanitizeUrl and both labels and accepted hrefs are escaped before insertion."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:renderLoader",
+      "context": "function:renderLoader@path:body[64]/body/body[1]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:ef298686f37653e7d544232a22daaa316ab63920a5c3a4942722a745827fee24",
+      "occurrence": 1,
+      "disposition": "escaped-theme-template",
+      "rationale": "The loader template is source-owned and escapes the translated or supplied status message before insertion."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:renderNavLinks",
+      "context": "function:renderNavLinks@path:body[53]/body/body[9]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:5fc534fc448de5d013d0b0aa5617539e845f1d7e94d78d64d408402fb3b75a66",
+      "occurrence": 1,
+      "disposition": "escaped-theme-template",
+      "rationale": "Navigation slugs, labels, and helper-produced hrefs are escaped before insertion into the owned anchor template."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:renderStaticView",
+      "context": "function:renderStaticView@path:body[65]/body/body[2]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:ff70f476ffd43a8a50b13238d6eab308bed511f4a2a7cd9e8c8fe380756f852f",
+      "occurrence": 1,
+      "disposition": "press-renderer-output",
+      "rationale": "The static-view wrapper escapes its heading and embeds body HTML supplied by Press's reviewed rendering contract."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:resetToolsPanel",
+      "context": "function:resetToolsPanel@path:body[61]/body/body[2]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:db33da94c309597e2d566cca73c8f34e98fd430afc53e09222c78026bab900ae",
+      "occurrence": 1,
+      "disposition": "empty-clear",
+      "rationale": "The theme-controls reset assigns only a constant empty string before remounting the Press control component."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:setupToolsPanel",
+      "context": "function:setupToolsPanel@path:body[60]/body/body[3]/consequent/body[0]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:dad067b44553df6f263a4033386019d36191924f108d034cef1573e93dedfe9c",
+      "occurrence": 1,
+      "disposition": "empty-clear",
+      "rationale": "The disabled theme-controls branch assigns only a constant empty string before hiding the host."
+    },
+    {
+      "path": "theme/modules/interactions.js",
+      "owner": "function:showToc",
+      "context": "function:showToc@path:body[63]/body/body[2]/alternate/body[0]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:29f3afafaf22530fdbe68b49fe64a9523de2c5007f22279840f7d2c3a27f9802",
+      "occurrence": 1,
+      "disposition": "press-renderer-output",
+      "rationale": "The fallback table-of-contents template escapes its title and embeds tocHtml supplied by Press's reviewed renderer."
+    },
+    {
+      "path": "theme/modules/layout.js",
+      "owner": "function:mount/variable:footer/callback:ensureElement(container,literal:\".solstice-footer\")#3",
+      "context": "function:mount/variable:footer/callback:ensureElement(container,literal:\".solstice-footer\")#3@path:body[2]/declaration/body/body[12]/declarations[0]/init/arguments[2]/body/body[3]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:b95e44c55466b1c19f9616ee14ace946df3f7c48cfad507ce04f484f2fb87262",
+      "occurrence": 1,
+      "disposition": "static-theme-template",
+      "rationale": "The footer skeleton is source-static apart from the fixed internal footer navigation id constant."
+    },
+    {
+      "path": "theme/modules/layout.js",
+      "owner": "function:mount/variable:header/callback:ensureElement(container,literal:\".solstice-header\")#3",
+      "context": "function:mount/variable:header/callback:ensureElement(container,literal:\".solstice-header\")#3@path:body[2]/declaration/body/body[5]/declarations[0]/init/arguments[2]/body/body[3]/expression",
+      "kind": "innerHTML-write",
+      "fingerprint": "sha256:0c785bf94b65810b5cd1cdf2b42f870dc818b740b17828d253df96ec5a1f4d5e",
+      "occurrence": 1,
+      "disposition": "static-theme-template",
+      "rationale": "The header skeleton is a source-static Solstice template with no user-controlled interpolation."
+    }
+  ]
+}
