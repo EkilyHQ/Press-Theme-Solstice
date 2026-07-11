@@ -9,10 +9,10 @@ const legacyInertDirectiveProcessor = {
   preprocess(source) {
     const occurrences = source.split(LEGACY_INERT_DIRECTIVE).length - 1;
     if (occurrences > 1) {
-      throw new Error('Arcus legacy inert ESLint directive unexpectedly grew');
+      throw new Error('Solstice legacy inert ESLint directive unexpectedly grew');
     }
     if (occurrences !== source.split(LEGACY_INERT_CONTEXT).length - 1) {
-      throw new Error('Arcus legacy inert ESLint directive moved outside its reviewed context');
+      throw new Error('Solstice legacy inert ESLint directive moved outside its reviewed context');
     }
     return [source.replace(LEGACY_INERT_DIRECTIVE, ' '.repeat(LEGACY_INERT_DIRECTIVE.length))];
   },
@@ -32,7 +32,7 @@ export default [
     }
   },
   {
-    files: ['scripts/**/*.js'],
+    files: ['*.js', 'scripts/**/*.js'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'commonjs',
@@ -41,7 +41,7 @@ export default [
     rules: RECOMMENDED_RULES
   },
   {
-    files: ['scripts/**/*.mjs'],
+    files: ['*.mjs', 'scripts/**/*.mjs'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
